@@ -13,8 +13,7 @@ export default function Home() {
             alt="Uber Logo"
             className="h-12 mb-8"
           />
-
-         
+ 
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             From daily commutes to late-night trips, our rides are always ready
             when you are.
