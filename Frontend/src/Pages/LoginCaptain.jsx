@@ -55,7 +55,7 @@ export default function LoginCaptain() {
         <div className="text-center mt-6 text-gray-300">
           <p>
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-400 hover:underline">
+            <Link to="/Register" className="text-blue-400 hover:underline">
               Sign Up
             </Link>
           </p>
