@@ -9,7 +9,7 @@ try{
   const user=await UserModel.findOne({email:email}).select("+password");
   if(!user){
     return res.json({msg:"Invalid Email or Password"});
-  }
+  } 
 
   const isMatch= await bcrypt.compare(password,user.password);
   if(!isMatch){
@@ -33,4 +33,24 @@ res.json({ message: "Logged in successfully" });
 
 
 }
-module.exports = Login;
+
+
+const Register=async (req,res)=>{
+try {
+  const {name,email,password} =req.body;
+  const hash =await bcrypt.hash(password, 10);
+  const user=UserModel.create({
+    name,
+    email,
+    password:hash
+  });
+  res.json({ message: "User registered successfully" });
+  
+} catch (error) {
+  console.error(error);
+  res.status(500).json({ msg: "Server error" });
+}
+
+}
+
+module.exports = {Login,Register};

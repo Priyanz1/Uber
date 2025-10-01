@@ -56,7 +56,7 @@ export default function LoginUser() {
         <div className="text-center mt-6 text-gray-300">
           <p>
             Don't have an account?{" "}
-            <Link to="/signup" className="text-green-500 hover:underline">
+            <Link to="/Register/user" className="text-green-500 hover:underline">
               Sign Up
             </Link>
           </p>
