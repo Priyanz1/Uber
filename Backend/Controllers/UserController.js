@@ -10,7 +10,6 @@ try{
   if(!user){
     return res.json({msg:"Invalid Email or Password"});
   } 
-
   const isMatch= await bcrypt.compare(password,user.password);
   if(!isMatch){
      return res.json({msg:"Invalid Email or Password"});
@@ -24,7 +23,7 @@ try{
   maxAge: 60 * 60 * 1000
 });
 
-res.json({ message: "Logged in successfully" });
+res.json({user,token});
 
 }catch (err) {
   console.error(err);
@@ -44,7 +43,7 @@ try {
     email,
     password:hash
   });
-  res.json({ message: "User registered successfully" });
+  res.json({ user:user });
   
 } catch (error) {
   console.error(error);
