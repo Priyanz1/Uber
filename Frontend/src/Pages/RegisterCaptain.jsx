@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+// import  CaptainContext  from "../context/CaptainContext";
 
 export default function RegisterCaptain() {
   const [name, setName] = useState("");
@@ -10,6 +11,7 @@ export default function RegisterCaptain() {
   const [vehicleModel, setVehicleModel] = useState("");
   const [plateNumber, setPlateNumber] = useState("");
   const navigate = useNavigate();
+  // const [user,setUser] = React.useContext(CaptainContext);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -30,9 +32,9 @@ export default function RegisterCaptain() {
 
       if (response.status === 201) {
         const {captain}=response.data;
-        localStorage.setItem("captain",JSON.stringify(captain));
-        localStorage.setItem("token",token);
-        navigate("/Login/captain"); 
+        // localStorage.setItem("captain",JSON.stringify(captain));
+        // localStorage.setItem("token",token);
+        navigate('/home'); 
       }
     } catch (error) {
       console.error("Captain registration failed:", error.response?.data || error.message);

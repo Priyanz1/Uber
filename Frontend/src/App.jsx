@@ -9,7 +9,9 @@ import Register from "./Pages/Register";
 import Home from "./Pages/Home";
 import RegisterUser from "./Pages/RegisterUser";
 import RegisterCaptain from "./Pages/RegisterCaptain";
+import UserProtectedWrapper from "./Pages/UserProtectedWrapper";
 function App() {
+  
   return (
     <Routes>
       <Route path="/" element={<Start />} />
@@ -17,9 +19,9 @@ function App() {
       <Route path="/login/user" element={<Loginuser />} />
       <Route path="/login/captain" element={<LoginCaptain />} />
       <Route path="/Register" element={<Register />} />
-      <Route path="/Register/user" element={<RegisterUser />} />
+      <Route path="/Register/user" element= {<RegisterUser />} />
       <Route path="/Register/captain" element={<RegisterCaptain />} />
-      <Route path="/Home" element={<Home />} />
+      <Route path="/Home" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
     </Routes>
   );
 }

@@ -14,7 +14,9 @@ try{
   if(!isMatch){
      return res.json({msg:"Invalid Email or Password"});
   }
- const token= jwt.sign({email:email},"secret");
+  const token = jwt.sign({ email: user.email, id: user._id }, "secret", {
+    expiresIn: "1h"
+  });
 
  res.cookie("token", token, {
   httpOnly: true,
@@ -37,13 +39,23 @@ res.json({user,token});
 const Register=async (req,res)=>{
 try {
   const {name,email,password} =req.body;
+  
+  const existingUser = await UserModel.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: "Email already registered" });
+  }
   const hash =await bcrypt.hash(password, 10);
-  const user=UserModel.create({
+  const user=await UserModel.create({
     name,
     email,
     password:hash
   });
-  res.json({ user:user });
+
+  const token = jwt.sign({ email: user.email, id: user._id }, "secret", {
+    expiresIn: "1h"
+  });
+
+  res.json({user,token});
   
 } catch (error) {
   console.error(error);

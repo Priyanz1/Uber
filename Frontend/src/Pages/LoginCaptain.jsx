@@ -21,7 +21,7 @@ export default function LoginCaptain() {
       if (response.status === 200) {
         const { captain, token } = response.data;
 
-        localStorage.setItem("captain", JSON.stringify(captain));
+        // localStorage.setItem("captain", JSON.stringify(captain));
         localStorage.setItem("token", token);
 
         navigate("/captain/dashboard");

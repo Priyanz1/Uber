@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserDataContext } from "../context/UserContext";
 export default function LoginUser() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate=useNavigate();
+  const {user,setUser}=useContext(UserDataContext);
   const handleLogin =async (e) => {
     e.preventDefault();
    const newuser={email,password};
    const response=await axios.post("http://localhost:5000/api/user/login",newuser);
    if(response.status===200){
-      const {user,token}=response.data;
-      localStorage.setItem("user",JSON.stringify(user));
-      localStorage.setItem("token",token);
-      navigate("/");
+    const data=response.data;
+    setUser(data.user);
+    localStorage.setItem('token',data.token);
+    navigate("/Home");
    }
     
   };

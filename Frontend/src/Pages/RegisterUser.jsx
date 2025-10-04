@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserDataContext } from "../context/UserContext";
 
 export default function RegisterUser() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const {user,setUser}=useContext(UserDataContext);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -16,7 +18,10 @@ export default function RegisterUser() {
 
       if (response.status === 201) {
         // Successfully registered, redirect to login
-        navigate("/Login/user");
+        const data=response.data;
+        setUser(data.user);
+        localStorage.setItem('token',data.token);
+        navigate("/Home");
       }
     } catch (error) {
       console.error("Registration failed:", error.response?.data || error.message);
