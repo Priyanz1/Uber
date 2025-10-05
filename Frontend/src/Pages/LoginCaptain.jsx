@@ -16,7 +16,7 @@ export default function LoginCaptain() {
         password,
       };
 
-      const response = await axios.post("http://localhost:5000/api/captain/login", loginData);
+      const response = await axios.post("http://localhost:3000/captain/login", loginData);
 
       if (response.status === 200) {
         const { captain, token } = response.data;

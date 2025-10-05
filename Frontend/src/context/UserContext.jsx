@@ -1,8 +1,8 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useState } from "react";
+
 
 export const UserDataContext = createContext({})
-
-export function UserProvider({ children }) {
+const UserContext=({ children })=>{
   const [user, setUser] = useState(
     {
        email:'',
@@ -10,14 +10,11 @@ export function UserProvider({ children }) {
     }
   );
 
-  return <UserDataContext.Provider value={value}>{children}</UserDataContext.Provider>;
+  return (<div>
+    <UserDataContext.Provider value={{ user, setUser }}>
+      {children}
+      </UserDataContext.Provider>;
+  </div>)
 }
 
-export function useUser() {
-  const context = useContext(UserDataContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  return context;
-}
-
+export default UserContext;

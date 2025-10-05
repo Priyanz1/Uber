@@ -28,7 +28,7 @@ export default function RegisterCaptain() {
         },
       };
 
-      const response = await axios.post("http://localhost:5000/api/captain/register", newCaptain);
+      const response = await axios.post("http://localhost:3000/captain/register", newCaptain);
 
       if (response.status === 201) {
         const {captain}=response.data;

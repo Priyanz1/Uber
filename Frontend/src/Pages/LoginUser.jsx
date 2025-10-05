@@ -10,7 +10,7 @@ export default function LoginUser() {
   const handleLogin =async (e) => {
     e.preventDefault();
    const newuser={email,password};
-   const response=await axios.post("http://localhost:5000/api/user/login",newuser);
+   const response=await axios.post("http://localhost:3000/users/login",newuser);
    if(response.status===200){
     const data=response.data;
     setUser(data.user);

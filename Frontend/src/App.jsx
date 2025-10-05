@@ -16,11 +16,11 @@ function App() {
     <Routes>
       <Route path="/" element={<Start />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/login/user" element={<Loginuser />} />
-      <Route path="/login/captain" element={<LoginCaptain />} />
+      <Route path="/users/login" element={<Loginuser />} />
+      <Route path="/captain/login" element={<LoginCaptain />} />
       <Route path="/Register" element={<Register />} />
-      <Route path="/Register/user" element= {<RegisterUser />} />
-      <Route path="/Register/captain" element={<RegisterCaptain />} />
+      <Route path="/users/Register" element= {<RegisterUser />} />
+      <Route path="/captain/Register" element={<RegisterCaptain />} />
       <Route path="/Home" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
     </Routes>
   );

@@ -14,11 +14,12 @@ export default function RegisterUser() {
     e.preventDefault();
     try {
       const newUser = { name, email, password };
-      const response = await axios.post("http://localhost:5000/api/user/register", newUser);
+      const response = await axios.post("http://localhost:3000/users/Register", newUser);
 
       if (response.status === 201) {
         // Successfully registered, redirect to login
         const data=response.data;
+        console.log(data);
         setUser(data.user);
         localStorage.setItem('token',data.token);
         navigate("/Home");

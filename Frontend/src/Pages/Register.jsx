@@ -10,13 +10,13 @@ export default function Register() {
 
         <div className="flex flex-col space-y-4">
           <Link
-            to="/Register/user"
+            to="/users/Register"
             className="w-full text-center px-6 py-3 rounded-2xl bg-green-500 hover:bg-green-600 transition font-semibold"
           >
             Register as User
           </Link>
           <Link
-            to="/Register/captain"
+            to="/captain/Register"
             className="w-full text-center px-6 py-3 rounded-2xl bg-blue-500 hover:bg-blue-600 transition font-semibold"
           >
             Register as Captain
