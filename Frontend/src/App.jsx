@@ -10,6 +10,8 @@ import Home from "./Pages/Home";
 import RegisterUser from "./Pages/RegisterUser";
 import RegisterCaptain from "./Pages/RegisterCaptain";
 import UserProtectedWrapper from "./Pages/UserProtectedWrapper";
+import CaptainHome from "./Pages/CaptainHome";
+import CaptainProtectedWrapper from "./Pages/CaptainProtectedWrapper";
 function App() {
   
   return (
@@ -21,7 +23,8 @@ function App() {
       <Route path="/Register" element={<Register />} />
       <Route path="/users/Register" element= {<RegisterUser />} />
       <Route path="/captain/Register" element={<RegisterCaptain />} />
-      <Route path="/Home" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
+      <Route path="/profile" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
+      <Route path="/profile" element={<CaptainProtectedWrapper><CaptainHome/> </CaptainProtectedWrapper>} />
     </Routes>
   );
 }

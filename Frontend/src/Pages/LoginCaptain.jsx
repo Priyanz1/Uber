@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { CaptainDataContext } from "../context/CaptainContext";
 
 export default function LoginCaptain() {
   const [identifier, setIdentifier] = useState(""); 
   const [password, setPassword] = useState("");
+  const {captain,setCaptain}=useContext(CaptainDataContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -19,12 +21,10 @@ export default function LoginCaptain() {
       const response = await axios.post("http://localhost:3000/captain/login", loginData);
 
       if (response.status === 200) {
-        const { captain, token } = response.data;
-
-        // localStorage.setItem("captain", JSON.stringify(captain));
-        localStorage.setItem("token", token);
-
-        navigate("/captain/dashboard");
+        const data = response.data;
+        setCaptain(data.captain);
+        localStorage.setItem("token", data.token);
+        navigate("/captain/profile");
       }
     } catch (error) {
       console.error("Captain login failed:", error.response?.data || error.message);

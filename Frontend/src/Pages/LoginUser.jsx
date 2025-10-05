@@ -17,7 +17,8 @@ export default function LoginUser() {
     localStorage.setItem('token',data.token);
     navigate("/Home");
    }
-    
+    setEmail('');
+    setPassword('');
   };
 
   return (
