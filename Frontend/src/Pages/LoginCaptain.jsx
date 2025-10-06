@@ -24,7 +24,7 @@ export default function LoginCaptain() {
         const data = response.data;
         setCaptain(data.captain);
         localStorage.setItem("token", data.token);
-        navigate("/captain/profile");
+        navigate("/captainhome");
       }
     } catch (error) {
       console.error("Captain login failed:", error.response?.data || error.message);
@@ -73,7 +73,7 @@ export default function LoginCaptain() {
         <div className="text-center mt-6 text-gray-300">
           <p>
             Don&apos;t have an account?{" "}
-            <Link to="/Register/captain" className="text-blue-400 hover:underline">
+            <Link to="/captain/Register" className="text-blue-400 hover:underline">
               Sign Up
             </Link>
           </p>

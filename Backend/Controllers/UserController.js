@@ -64,4 +64,9 @@ try {
 
 }
 
-module.exports = {Login,Register};
+const UserProfile=async (req, res, next) => {
+    res.status(200).json(req.user);
+}
+
+
+module.exports = {Login,Register,UserProfile};

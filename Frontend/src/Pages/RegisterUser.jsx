@@ -16,14 +16,18 @@ export default function RegisterUser() {
       const newUser = { name, email, password };
       const response = await axios.post("http://localhost:3000/users/Register", newUser);
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         // Successfully registered, redirect to login
         const data=response.data;
         console.log(data);
         setUser(data.user);
         localStorage.setItem('token',data.token);
-        navigate("/Home");
+        navigate("/home");
       }
+
+      setName('');
+      setEmail('');
+      setPassword('');
     } catch (error) {
       console.error("Registration failed:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Registration failed. Try again.");
@@ -84,7 +88,7 @@ export default function RegisterUser() {
         <div className="text-center mt-6 text-gray-300">
           <p>
             Already have an account?{" "}
-            <Link to="/Login/user" className="text-green-500 hover:underline">
+            <Link to="/users/login" className="text-green-500 hover:underline">
               Login
             </Link>
           </p>
@@ -98,3 +102,19 @@ export default function RegisterUser() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

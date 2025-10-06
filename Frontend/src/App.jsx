@@ -23,8 +23,8 @@ function App() {
       <Route path="/Register" element={<Register />} />
       <Route path="/users/Register" element= {<RegisterUser />} />
       <Route path="/captain/Register" element={<RegisterCaptain />} />
-      <Route path="/profile" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
-      <Route path="/profile" element={<CaptainProtectedWrapper><CaptainHome/> </CaptainProtectedWrapper>} />
+      <Route path="/home" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
+      <Route path="/captainhome" element={<CaptainProtectedWrapper><CaptainHome/> </CaptainProtectedWrapper>} />
     </Routes>
   );
 }

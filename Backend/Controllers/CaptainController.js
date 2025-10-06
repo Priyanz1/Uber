@@ -2,16 +2,20 @@
    const CaptainModel=require("../Models/CaptainModel");
    const jwt=require("jsonwebtoken");
    const Register=async (req,res)=>{
-        const {name,email,password,vehicle,model,plateNumber,type}=req.body;
+    const { name, email, password, vehicle } = req.body;
+    const existing = await CaptainModel.findOne({ "vehicle.plateNumber": vehicle.plateNumber });
+    if (existing) {
+      return res.status(400).json({ message: "Vehicle plate number already registered" });
+    }
         const hash=await bcrypt.hash(password,10);
-        const captain= CaptainModel.create({name,email,password:hash,vehicle,model,plateNumber,type});
+        const captain=await CaptainModel.create({name,email,password:hash,vehicle});
         const token=jwt.sign({email:email},"secret");
         res.cookie("token",token,{
             httpOnly:true,
-            secure:true,
+            secure:false,
             sameSite:"strict",
             maxAge:60*60*1000});
-        res.status(201).json({captain,token});
+        res.status(200).json({captain,token});
     }
     const Login=async (req,res)=>{
         const {email,password}=req.body;
@@ -26,7 +30,7 @@
         const token=jwt.sign({email:email},"secret");
         res.cookie("token",token,{
             httpOnly:true,
-            secure:true,
+            secure:false,
             sameSite:"strict",
             maxAge:60*60*1000});
         res.status(200).json({captain,token});

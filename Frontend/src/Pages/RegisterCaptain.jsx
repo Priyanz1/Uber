@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-// import  CaptainContext  from "../context/CaptainContext";
+import  {CaptainDataContext}  from "../context/CaptainContext";
 
 export default function RegisterCaptain() {
   const [name, setName] = useState("");
@@ -11,7 +11,8 @@ export default function RegisterCaptain() {
   const [vehicleModel, setVehicleModel] = useState("");
   const [plateNumber, setPlateNumber] = useState("");
   const navigate = useNavigate();
-  // const [user,setUser] = React.useContext(CaptainContext);
+  const { captain, setCaptain } = React.useContext(CaptainDataContext);
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -28,13 +29,13 @@ export default function RegisterCaptain() {
         },
       };
 
-      const response = await axios.post("http://localhost:3000/captain/register", newCaptain);
+      const response = await axios.post("http://localhost:3000/captain/Register", newCaptain);
 
-      if (response.status === 201) {
-        const {captain}=response.data;
-        // localStorage.setItem("captain",JSON.stringify(captain));
-        // localStorage.setItem("token",token);
-        navigate('/home'); 
+      if (response.status === 200) {
+        const data=response.data;
+        setCaptain(data.captain)
+        localStorage.setItem("token",data.token);
+        navigate('/captainhome'); 
       }
     } catch (error) {
       console.error("Captain registration failed:", error.response?.data || error.message);
@@ -132,7 +133,7 @@ export default function RegisterCaptain() {
         <div className="text-center mt-6 text-gray-300">
           <p>
             Already have an account?{" "}
-            <Link to="/Login/captain" className="text-blue-400 hover:underline">
+            <Link to="/captain/login" className="text-blue-400 hover:underline">
               Login
             </Link>
           </p>

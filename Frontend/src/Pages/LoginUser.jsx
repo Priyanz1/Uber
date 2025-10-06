@@ -15,7 +15,7 @@ export default function LoginUser() {
     const data=response.data;
     setUser(data.user);
     localStorage.setItem('token',data.token);
-    navigate("/Home");
+    navigate("/home");
    }
     setEmail('');
     setPassword('');
@@ -65,7 +65,7 @@ export default function LoginUser() {
         <div className="text-center mt-6 text-gray-300">
           <p>
             Don't have an account?{" "}
-            <Link to="/Register/user" className="text-green-500 hover:underline">
+            <Link to="/users/Register" className="text-green-500 hover:underline">
               Sign Up
             </Link>
           </p>
