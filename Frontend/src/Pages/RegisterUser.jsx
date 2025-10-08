@@ -17,7 +17,7 @@ export default function RegisterUser() {
       const response = await axios.post("http://localhost:3000/users/Register", newUser);
 
       if (response.status === 200) {
-        // Successfully registered, redirect to login
+        
         const data=response.data;
         console.log(data);
         setUser(data.user);
