@@ -5,7 +5,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 const CaptainLoginAuth = async (req, res, next) => {
   try {
-    const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
+    const authHeader = req.headers.authorization;
+    const token = req.cookies?.token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null);
 
     if (!token) {
       return res.status(401).json({ msg: "Login first" });
@@ -21,11 +22,9 @@ const CaptainLoginAuth = async (req, res, next) => {
     req.captain = captain;
     next();
   } catch (err) {
-    console.error("Captain auth error:", err);
+    console.error("Captain auth error:", err.message);
     res.status(401).json({ msg: "Token is not valid or expired" });
   }
 };
 
 module.exports = CaptainLoginAuth;
-
-
