@@ -16,7 +16,6 @@ export default function RegisterCaptain() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     try {
       const newCaptain = {
         name,

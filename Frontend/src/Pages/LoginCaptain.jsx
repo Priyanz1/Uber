@@ -1,89 +1,73 @@
-import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from 'axios';
+import React, { useContext, useState } from 'react'
 import { CaptainDataContext } from "../context/CaptainContext";
-
-export default function LoginCaptain() {
-  const [identifier, setIdentifier] = useState(""); 
-  const [password, setPassword] = useState("");
-  const {captain,setCaptain}=useContext(CaptainDataContext);
-  const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
+import { useNavigate } from 'react-router-dom';
+function LoginCaptain() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');  
+  const {captain, setCaptain}=useContext(CaptainDataContext);
+  const navigate=useNavigate();
+   const handleSubmit=async (e)=>{
     e.preventDefault();
-
-    try {
-      const loginData = {
-        identifier, 
-        password,
-      };
-
-      const response = await axios.post("http://localhost:3000/captain/login", loginData);
-
-      if (response.status === 200) {
-        const data = response.data;
-        setCaptain(data.captain);
-        localStorage.setItem("token", data.token);
-        navigate("/captainhome");
+    try{
+      const User={
+        email,
+        password
       }
-    } catch (error) {
-      console.error("Captain login failed:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Login failed. Try again.");
+       const response=await axios.post("http://localhost:3000/captain/login",User);
+       if(response.status == 200){
+        const data=response.data;
+       setCaptain(data.captain);
+       localStorage.setItem('token',data.token);
+       navigate("/captainhome");
+       }
+       setEmail('');
+       setPassword('');
+    }catch(error){
+      console.error("Login failed:", error.response?.data || error.message);
     }
-  };
+   }
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-6">
-      <div className="max-w-md w-full bg-gray-800 rounded-2xl p-8 shadow-2xl">
-        <h1 className="text-3xl font-bold text-center mb-6">Captain Login</h1>
+ <div className='flex justify-center min-h-screen w-screen items-center  bg-gray-900'>
+    <div className='max-w-md w-full bg-gray-800 rounded-2xl p-8 shadow-2xl space-y-4'>
+    <form onSubmit={handleSubmit}  action="" className="space-y-4">
+      <div>
+        <label className='block text-gray-300 mb-1'>Email</label>
+        <input
+  type="email"
+  placeholder="Enter your email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+  autoComplete="email"
+/>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-gray-300 mb-1">Email or Phone</label>
-            <input
-              type="text"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="Enter your email or phone"
-              className="w-full px-4 py-2 rounded-2xl bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+      </div>
+      <div>
+        <label className='block text-gray-300 mb-1'>Password</label>
+        <input
+  type="password"
+  placeholder="Enter your password"
+  className="w-full px-4 py-2 rounded-2xl bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  required
+  autoComplete="current-password" // ← Add this
+/>
 
-          <div>
-            <label className="block text-gray-300 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 rounded-2xl bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <button
+      </div>
+      <button
             type="submit"
-            className="w-full py-3 rounded-2xl bg-blue-500 hover:bg-blue-600 transition font-semibold mt-4"
+            className="w-full py-3 rounded-2xl bg-green-500 hover:bg-green-600 transition font-semibold mt-4"
           >
             Login
           </button>
-        </form>
-
-        <div className="text-center mt-6 text-gray-300">
-          <p>
-            Don&apos;t have an account?{" "}
-            <Link to="/captain/Register" className="text-blue-400 hover:underline">
-              Sign Up
-            </Link>
-          </p>
-          <p className="mt-2">
-            <Link to="/" className="hover:underline">
-              Back to Home
-            </Link>
-          </p>
-        </div>
-      </div>
+    </form>
     </div>
-  );
+ </div>
+  )
 }
+
+export default LoginCaptain

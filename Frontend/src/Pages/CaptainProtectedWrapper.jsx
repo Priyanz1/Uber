@@ -1,5 +1,3 @@
-
-
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +6,7 @@ import { CaptainDataContext } from '../context/CaptainContext';
 function CaptainProtectedWrapper({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem('token');
-  const { captain, setCaptain } = useContext(CaptainDataContext);
+  const { setCaptain } = useContext(CaptainDataContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,13 +24,17 @@ function CaptainProtectedWrapper({ children }) {
         });
 
         if (response.status === 200) {
-          setCaptain(response.data.captain);
-          setIsLoading(false);
+          setCaptain(response.data); // Captains data from backend
+        } else {
+          localStorage.removeItem('token');
+          navigate('/captain/login');
         }
       } catch (err) {
-        console.log(err);
+        console.error('Auth check failed:', err);
         localStorage.removeItem('token');
         navigate('/captain/login');
+      } finally {
+        setIsLoading(false); // Stop loading in all cases
       }
     };
 

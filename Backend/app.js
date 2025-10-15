@@ -6,13 +6,13 @@ const CaptainRouting= require("./routes/CaptainRouting");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./DB/dbconnect");
 connectDB();
-// app.use(cors({
-//     origin: ["http://localhost:5173", "https://yourfrontend.com"], // allowed frontends
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true
-//   }));
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
+
   
-app.use(cors());
+// app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

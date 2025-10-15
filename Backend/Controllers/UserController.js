@@ -69,4 +69,4 @@ const UserProfile=async (req, res, next) => {
 }
 
 
-module.exports = {Login,Register,UserProfile};
+module.exports ={Login,Register,UserProfile};

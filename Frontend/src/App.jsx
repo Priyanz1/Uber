@@ -25,6 +25,12 @@ function App() {
       <Route path="/captain/Register" element={<RegisterCaptain />} />
       <Route path="/home" element={<UserProtectedWrapper><Home /> </UserProtectedWrapper>} />
       <Route path="/captainhome" element={<CaptainProtectedWrapper><CaptainHome/> </CaptainProtectedWrapper>} />
+      {/* <Route path='/captainhome' element={
+          <CaptainProtectedWrapper>
+            <CaptainHome />
+          </CaptainProtectedWrapper>
+
+        } /> */}
     </Routes>
   );
 }
