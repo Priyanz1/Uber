@@ -25,13 +25,13 @@ const CaptainLoginAuth = async (req, res, next) => {
       return res.status(404).json({ msg: "Captain not found" });
     }
 
-    // Attach captain to request
+   
     req.captain = captain;
     next();
   } catch (err) {
     console.error("Captain auth error:", err.name, err.message);
 
-    // Handle expired token separately (optional)
+    
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ msg: "Token expired, please login again" });
     }

@@ -94,4 +94,15 @@ const CaptainProfile = async (req, res) => {
   }
 };
 
-module.exports = { Register, Login, CaptainProfile };
+const LogoutCaptain=(req,res)=>{
+  try{
+    res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
+    res.status(200).send({msg:"Captain logged out successfully"});
+  }catch(error){
+    console.log(error);
+    res.status(500).send({msg:"user is not log out"});
+  }
+}
+
+
+module.exports = { Register, Login, CaptainProfile,LogoutCaptain};

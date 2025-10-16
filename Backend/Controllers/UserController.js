@@ -68,5 +68,14 @@ const UserProfile=async (req, res, next) => {
     res.status(200).json(req.user);
 }
 
+const LogoutUser= (req,res)=>{
+  try{
+    res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
+    res.status(200).send({msg:"user logged out successfully"});
+  }catch(error){
+    console.log(error);
+    res.status(500).send({msg:"user is not log out"});
+  }
+}
 
-module.exports ={Login,Register,UserProfile};
+module.exports ={Login,Register,UserProfile,LogoutUser};
