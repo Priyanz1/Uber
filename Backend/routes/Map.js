@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getAddress, getDistanceAndTime, getFare } = require("../service");
+const { getCoordinates, getDistanceAndTime } = require("../Controllers/mapController");
 const CaptainLoginAuth = require("../middleware/CaptainLoginAuth");
+const { getFare } = require("../service");
 
-router.post("/getcode",CaptainLoginAuth, getAddress);
-
-router.post("/distance",CaptainLoginAuth, getDistanceAndTime);
-
-router.post("/fare", getFare);
-
+router.post("/getcoordinates",CaptainLoginAuth, getCoordinates);
+router.post("/distancetime",CaptainLoginAuth, getDistanceAndTime);
+router.post("/calculatefare",CaptainLoginAuth, getFare);
 module.exports = router;
