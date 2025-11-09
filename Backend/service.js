@@ -260,4 +260,20 @@ const calculateFare = (distanceInKm, durationInMinutes, vehicleType) => {
   };
 };
 
-module.exports = { getAddress, getDistanceAndTime, getFare };
+const getAutoSuggestions = async (input) => {
+  if(!input) return res.status(400).json({msg:"input is required"});
+  const apiKey=process.env.GOOGLE_MAPS_API_KEY;
+  const url=`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${apiKey}`;
+  try {
+    const response = await axios.get(url);
+    if(response.data.status === 'OK') {
+    return response.data.predictions;
+  }else{
+    throw new Error('Auto suggestions not found');
+  }
+  } catch (err) {
+    console.error(err);
+  throw err;
+  }
+};
+module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions };
