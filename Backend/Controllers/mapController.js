@@ -1,7 +1,8 @@
 const service=require("../service");
+
 const getCoordinates= async (req,res,next)=>{
   try{
-    const {address}= req.query;
+    const {address}= req.body;
     const coordinates=await service.getAddress(address);
     res.status(200).json(coordinates);
   }catch(err){
@@ -9,9 +10,10 @@ const getCoordinates= async (req,res,next)=>{
     res.status(404).json({msg:"location not found"});
   }
 }
+
 const getDistanceAndTime= async (req,res,next)=>{
   try{
-    const {pickup,destination}= req.query;
+    const {pickup,destination}= req.body;
     const distanceAndTime=await service.getDistanceAndTime(pickup,destination);
     res.status(200).json(distanceAndTime);
   }catch(err){
@@ -19,9 +21,10 @@ const getDistanceAndTime= async (req,res,next)=>{
     res.status(404).json({msg:"distance and time not found"});
   }
 }
+
 const gtAutoSuggestions= async (req,res,next)=>{
   try{
-    const {input}= req.query;
+    const {input}= req.body;
     const autoSuggestions=await service.getAutoSuggestions(input);
     res.status(200).json(autoSuggestions);
   }catch(err){
@@ -29,4 +32,36 @@ const gtAutoSuggestions= async (req,res,next)=>{
     res.status(404).json({msg:"auto suggestions not found"});
   }
 }
-module.exports={getCoordinates,getDistanceAndTime,gtAutoSuggestions};  
+
+const calculateFare = async (req,res,next)=>{
+  try{
+    const { distance, duration, vehicleType='car' } = req.body;
+    const fareBreakdown = service.getFare(distance, duration, vehicleType);
+    res.status(200).json({
+      success: true,
+      data: {
+        distance: {
+          kilometers: parseFloat((distance/1000).toFixed(2)),
+          meters: distance
+        },
+        duration: {
+          minutes: parseFloat((duration/60).toFixed(2)),
+          seconds: duration
+        },
+        vehicleType,
+        fare: fareBreakdown,
+        breakdown: {
+          distance_fare: fareBreakdown.distance_fare,
+          time_fare: fareBreakdown.time_fare,
+          base_fare: fareBreakdown.base_fare,
+          total_fare: fareBreakdown.total_fare
+        }
+      }
+    });
+  }catch(err){
+    console.error(err);
+    res.status(500).json({success:false, message:'Error calculating fare'});
+  }
+}
+
+module.exports={getCoordinates,getDistanceAndTime,gtAutoSuggestions, calculateFare};  

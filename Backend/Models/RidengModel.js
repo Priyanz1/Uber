@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-const RidingModelSchema = new mongoose.Schema(
+const ridingSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,7 +11,7 @@ const RidingModelSchema = new mongoose.Schema(
     captain: {
       type: mongoose.Schema.Types.ObjectId,
       ref:'Captain',
-      required: true,
+      required: false,
     },
     pickup: {
       type: String,
@@ -52,6 +52,5 @@ const RidingModelSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const RidingModel  = mongoose.model("Riding", RidingModelSchema );
-
-module.exports=CaptainModel;
+const RidingModel = mongoose.model("RidingModel", ridingSchema );
+module.exports=RidingModel;
