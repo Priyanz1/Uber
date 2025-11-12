@@ -10,8 +10,8 @@ const LoginAuth = require("../middleware/UserLoginAuth");
 // router.post("/get-suggestions",CaptainLoginAuth, gtAutoSuggestions);
 // module.exports = router;
 
-router.post("/getcoordinates", getCoordinates);
-router.post("/distancetime", getDistanceAndTime);
+router.post("/getcoordinates", LoginAuth,getCoordinates);
+router.post("/distancetime",LoginAuth, getDistanceAndTime);
 router.post("/calculatefare",LoginAuth, calculateFare);
 router.post("/get-suggestions",LoginAuth, gtAutoSuggestions);
 module.exports = router;
