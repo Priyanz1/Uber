@@ -1,48 +1,48 @@
 const axios = require('axios');
 const RidingModel = require('./Models/RidengModel');
 
-
-const OPENCAGE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
-// const ORS_API_KEY=process.env.GOOGLE_API_KEY2;
+ 
 
 
+// 🧭 Get coordinates using OpenCage
 const getAddress = async (address) => {
+  const OPENCAGE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
   if (!OPENCAGE_API_KEY) {
-    throw new Error('OpenCage API key not configured. Please set OPENCAGE_API_KEY');
+    throw new Error("OpenCage API key not configured. Please set OPENCAGE_API_KEY");
   }
 
   if (!address) {
-    throw new Error('Address is required');
+    throw new Error("Address is required");
   }
 
-  const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
+  const response = await axios.get("https://api.opencagedata.com/geocode/v1/json", {
     params: {
       q: address,
-      key: OPENCAGE_API_KEY
-    }
+      key: OPENCAGE_API_KEY,
+    },
   });
 
   const data = response.data;
 
   if (!data.results || data.results.length === 0) {
-    throw new Error('Location not found');
+    throw new Error("Location not found");
   }
 
   const location = data.results[0].geometry;
   const formattedAddress = data.results[0].formatted;
 
   return {
-    latitude: location.lat,
-    longitude: location.lng,
+    lat: location.lat,
+    lng: location.lng,
     address: formattedAddress,
-    originalAddress: address
+    originalAddress: address,
   };
 };
 
-
-
+// 🚗 Get distance and time using OpenRouteService
 const getDistanceAndTime = async (pickup, destination) => {
-  if (!process.env.ORS_API_KEY) throw new Error("OpenRouteService API key not configured.");
+  const ORS_API_KEY = process.env.ORS_API_KEY;
+  if (!ORS_API_KEY) throw new Error("OpenRouteService API key not configured.");
   if (!pickup || !destination) throw new Error("Both pickup and destination are required");
 
   const location1 = await getAddress(pickup);
@@ -52,7 +52,7 @@ const getDistanceAndTime = async (pickup, destination) => {
   console.log("End:", `${location2.lng},${location2.lat}`);
 
   const response = await axios.get("https://api.openrouteservice.org/v2/directions/driving-car", {
-    headers: {  Authorization: `Bearer ${process.env.ORS_API_KEY}`},
+    headers: { Authorization: ORS_API_KEY },
     params: {
       start: `${location1.lng},${location1.lat}`,
       end: `${location2.lng},${location2.lat}`,
@@ -60,9 +60,10 @@ const getDistanceAndTime = async (pickup, destination) => {
   });
 
   const data = response.data;
-  if (!data.routes || !data.routes.length) throw new Error("Route not found");
+  if (!data.features || !data.features.length)
+    throw new Error("Route not found");
 
-  const summary = data.routes[0].summary;
+  const summary = data.features[0].properties.summary;
 
   return {
     pickup,
@@ -72,9 +73,8 @@ const getDistanceAndTime = async (pickup, destination) => {
   };
 };
 
-  
-
-
+ 
+ 
 
 const calculateFare = (distanceInKm, durationInMinutes, vehicleType) => {
   const rates = {
