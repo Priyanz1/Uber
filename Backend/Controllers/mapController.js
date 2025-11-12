@@ -11,16 +11,39 @@ const getCoordinates= async (req,res,next)=>{
   }
 }
 
-const getDistanceAndTime= async (req,res,next)=>{
-  try{
-    const {pickup,destination}= req.body;
-    const distanceAndTime=await service.getDistanceAndTime(pickup,destination);
+// const getDistanceAndTime= async (req,res,next)=>{
+//   try{
+//     const {pickup,destination}= req.body;
+//     const distanceAndTime=await service.getDistanceAndTime(pickup,destination);
+//     res.status(200).json(distanceAndTime);
+//   }catch(err){
+//     console.error(err);
+//     res.status(404).json({msg:"distance and time not found"});
+//   }
+// }
+
+const getDistanceAndTime = async (req, res, next) => {
+  try {
+    const { pickup, destination } = req.body;
+
+    if (!pickup || !destination) {
+      return res.status(400).json({ msg: "Pickup and destination are required" });
+    }
+
+    const distanceAndTime = await service.getDistanceAndTime(pickup, destination);
+
     res.status(200).json(distanceAndTime);
-  }catch(err){
-    console.error(err);
-    res.status(404).json({msg:"distance and time not found"});
+  } catch (err) {
+    console.error("Error in getDistanceAndTime:", err.message);
+    res.status(500).json({
+      success: false,
+      msg: "Failed to calculate distance and time",
+      error: err.message,
+    });
   }
-}
+};
+
+
 
 const gtAutoSuggestions= async (req,res,next)=>{
   try{

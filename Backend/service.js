@@ -2,29 +2,34 @@ const axios = require('axios');
 const RidingModel = require('./Models/RidengModel');
 
 
-const GOOGLE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+const OPENCAGE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+// const ORS_API_KEY=process.env.GOOGLE_API_KEY2;
 
 
 const getAddress = async (address) => {
-  if (!GOOGLE_API_KEY) {
-    throw new Error('Google Maps API key not configured. Please set GOOGLE_MAPS_API_KEY');
+  if (!OPENCAGE_API_KEY) {
+    throw new Error('OpenCage API key not configured. Please set OPENCAGE_API_KEY');
   }
+
   if (!address) {
     throw new Error('Address is required');
   }
 
-  const response = await axios.get(
-    'https://maps.googleapis.com/maps/api/geocode/json',
-    { params: { address, key: GOOGLE_API_KEY } }
-  );
+  const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
+    params: {
+      q: address,
+      key: OPENCAGE_API_KEY
+    }
+  });
 
   const data = response.data;
-  if (data.status !== 'OK' || data.results.length === 0) {
+
+  if (!data.results || data.results.length === 0) {
     throw new Error('Location not found');
   }
 
-  const location = data.results[0].geometry.location;
-  const formattedAddress = data.results[0].formatted_address;
+  const location = data.results[0].geometry;
+  const formattedAddress = data.results[0].formatted;
 
   return {
     latitude: location.lat,
@@ -35,52 +40,38 @@ const getAddress = async (address) => {
 };
 
 
+
 const getDistanceAndTime = async (pickup, destination) => {
-    if (!GOOGLE_API_KEY) {
-      throw new Error('Google Maps API key not configured. Please set GOOGLE_MAPS_API_KEY');
-    }
-    if (!pickup || !destination) {
-      throw new Error('Both pickup and destination are required');
-    }
-  
-    const response = await axios.get(
-      'https://maps.googleapis.com/maps/api/distancematrix/json',
-      {
-        params: {
-          origins: pickup,
-          destinations: destination,
-          units: 'metric',
-          key: GOOGLE_API_KEY,
-        },
-      }
-    );
-  
-    const data = response.data;
-    if (data.status !== 'OK') {
-      throw new Error('Invalid request to Google Maps API');
-    }
-  
-    const element = data.rows?.[0]?.elements?.[0];
-    if (!element || element.status !== 'OK') {
-      throw new Error('Could not calculate route between the provided locations');
-    }
-  
-    const distance = element.distance;
-    const duration = element.duration;
-  
-    return {
-      pickup,
-      destination,
-      distance: {
-        text: distance.text,
-        value: distance.value,
-      },
-      duration: {
-        text: duration.text,
-        value: duration.value,
-      }
-    };
+  if (!process.env.ORS_API_KEY) throw new Error("OpenRouteService API key not configured.");
+  if (!pickup || !destination) throw new Error("Both pickup and destination are required");
+
+  const location1 = await getAddress(pickup);
+  const location2 = await getAddress(destination);
+
+  console.log("Start:", `${location1.lng},${location1.lat}`);
+  console.log("End:", `${location2.lng},${location2.lat}`);
+
+  const response = await axios.get("https://api.openrouteservice.org/v2/directions/driving-car", {
+    headers: {  Authorization: `Bearer ${process.env.ORS_API_KEY}`},
+    params: {
+      start: `${location1.lng},${location1.lat}`,
+      end: `${location2.lng},${location2.lat}`,
+    },
+  });
+
+  const data = response.data;
+  if (!data.routes || !data.routes.length) throw new Error("Route not found");
+
+  const summary = data.routes[0].summary;
+
+  return {
+    pickup,
+    destination,
+    distance_km: (summary.distance / 1000).toFixed(2),
+    duration_min: (summary.duration / 60).toFixed(2),
   };
+};
+
   
 
 
