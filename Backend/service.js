@@ -111,24 +111,30 @@ const getFare = (distance, duration, vehicleType = 'car') => {
   return calculateFare(distanceInKm, durationInMinutes, vehicleType);
 };
 
+
 const getAutoSuggestions = async (input) => {
-    if (!input) throw new Error('input is required');
-  
-    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    if (!apiKey) throw new Error('Google Maps API key not configured');
-  
-    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json`;
-  
-    const response = await axios.get(url, {
-      params: { input, key: apiKey }
-    });
-  
-    if (response.data.status !== 'OK') {
-      throw new Error('Auto suggestions not found');
-    }
-  
-    return response.data.predictions;
-  };  
+  const apiKey = process.env.GEOAPIFY_API_KEY;
+  if (!apiKey) throw new Error("Geoapify API key not configured");
+
+  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(
+    input
+  )}&limit=5&apiKey=${apiKey}`;
+
+  const { data } = await axios.get(url);
+
+  if (!data || !data.features || data.features.length === 0) {
+    return [];
+  }
+
+  // Return only the useful info
+  return data.features.map((f) => ({
+    name: f.properties.formatted,
+    lat: f.geometry.coordinates[1],
+    lon: f.geometry.coordinates[0],
+  }));
+};
+
+
 
 
 const createRide = async ({ user, pickup, destination, vehicleType = 'car' }) => {

@@ -23,17 +23,34 @@ const getDistanceAndTime= async (req,res,next)=>{
   }
 }
 
+const getAutoSuggestions = async (req, res, next) => {
+  try {
+    const { input } = req.body; // ✅ You can also use req.query if you prefer GET
+    if (!input || input.trim() === "") {
+      return res.status(400).json({ msg: "Input is required" });
+    }
 
-const gtAutoSuggestions= async (req,res,next)=>{
-  try{
-    const {input}= req.body;
-    const autoSuggestions=await service.getAutoSuggestions(input);
-    res.status(200).json(autoSuggestions);
-  }catch(err){
-    console.error(err);
-    res.status(404).json({msg:"auto suggestions not found"});
+    const autoSuggestions = await service.getAutoSuggestions(input);
+
+    // ✅ Check if we got valid data back
+    if (!autoSuggestions || autoSuggestions.length === 0) {
+      return res.status(404).json({ msg: "No auto suggestions found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      suggestions: autoSuggestions,
+    });
+  } catch (err) {
+    console.error("Error in getAutoSuggestions:", err.message);
+    res.status(500).json({
+      success: false,
+      msg: "Failed to fetch auto suggestions",
+      error: err.message,
+    });
   }
-}
+};
+
 
 const calculateFare = async (req,res,next)=>{
   try{
@@ -66,4 +83,4 @@ const calculateFare = async (req,res,next)=>{
   }
 }
 
-module.exports={getCoordinates,getDistanceAndTime,gtAutoSuggestions, calculateFare};  
+module.exports={getCoordinates,getDistanceAndTime,getAutoSuggestions, calculateFare};  
