@@ -7,6 +7,7 @@ const cors = require("cors");
 const UserRouting= require("./routes/UserRouting");
 const CaptainRouting= require("./routes/CaptainRouting");
 const MapRouting = require("./routes/Map");
+const CreateRiding = require("./routes/CreateRiding")
 const cookieParser = require("cookie-parser");
 const connectDB = require("./DB/dbconnect");
 connectDB();
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/users",UserRouting);
 app.use("/captain",CaptainRouting);
 app.use("/map", MapRouting);
+app.use("/ride", CreateRiding);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT,()=>{

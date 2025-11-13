@@ -81,7 +81,9 @@ const getDistanceAndTime = async (pickup, destination) => {
       throw new Error('Pickup and destination are required');
   }
 
-  const distanceTime = await mapService.getDistanceTime(pickup, destination);
+  const distanceTime = await getDistanceAndTime(pickup, destination);
+  const distanceKm = parseFloat(distanceTime.distance_km);
+const durationMin = parseFloat(distanceTime.duration_min);
 
   const baseFare = {
       auto: 30,
@@ -102,9 +104,9 @@ const getDistanceAndTime = async (pickup, destination) => {
   };
 
   const fare = {
-      auto: Math.round(baseFare.auto + ((distanceTime.distance.value / 1000) * perKmRate.auto) + ((distanceTime.duration.value / 60) * perMinuteRate.auto)),
-      car: Math.round(baseFare.car + ((distanceTime.distance.value / 1000) * perKmRate.car) + ((distanceTime.duration.value / 60) * perMinuteRate.car)),
-      moto: Math.round(baseFare.moto + ((distanceTime.distance.value / 1000) * perKmRate.moto) + ((distanceTime.duration.value / 60) * perMinuteRate.moto))
+      auto: Math.round(baseFare.auto + ((distanceKm ) * perKmRate.auto) + ((durationMin) * perMinuteRate.auto)),
+      car: Math.round(baseFare.car + ((distanceKm) * perKmRate.car) + ((durationMin) * perMinuteRate.car)),
+      moto: Math.round(baseFare.moto + ((distanceKm) * perKmRate.moto) + ((durationMin) * perMinuteRate.moto))
   };
 
   return fare;
@@ -135,30 +137,37 @@ const getAutoSuggestions = async (input) => {
 
 
 
+const getOtp=async (num)=>{
+  function generateOtp(num) {
+      const otp = crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
+      return otp;
+  }
+  return generateOtp(num);
+}
 
-const createRide = async ({ userId, pickup, destination, vehicleType}) => {
-  if (!user || !pickup || !destination || !vehicleType) {
+const createRide = async ({ userId, pickup, destination, vehicleType }) => {
+  if (!userId || !pickup || !destination || !vehicleType) {
     throw new Error('data not received');
   }
 
-const getOtp=async (num)=>{
-    function generateOtp(num) {
-        const otp = crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
-        return otp;
-    }
-    return generateOtp(num);
-}
+  const fare = await getFare(pickup, destination);
+  const otp = await getOtp(6);
 
-   const fare=await getFare(pickup,destination);
+  if (!fare || !fare[vehicleType]) {
+    throw new Error('Invalid fare data');
+  }
+
   const ride = await RidingModel.create({
-    user:userId,
+    user: userId,
     pickup,
     destination,
-    otp: getOtp(6),
-    fare:fare[vehicleType]
+    otp,
+    fare: fare[vehicleType],
   });
+
   return ride;
 };
+
 
 module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions, createRide };
 
