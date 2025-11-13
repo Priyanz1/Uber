@@ -145,8 +145,8 @@ const getOtp=async (num)=>{
   return generateOtp(num);
 }
 
-const createRide = async ({ userId, pickup, destination, vehicleType }) => {
-  if (!userId || !pickup || !destination || !vehicleType) {
+const createRide = async ({ user, pickup, destination, vehicleType }) => {
+  if (!user || !pickup || !destination || !vehicleType) {
     throw new Error('data not received');
   }
 
@@ -158,7 +158,7 @@ const createRide = async ({ userId, pickup, destination, vehicleType }) => {
   }
 
   const ride = await RidingModel.create({
-    user: userId,
+    user,
     pickup,
     destination,
     otp,
