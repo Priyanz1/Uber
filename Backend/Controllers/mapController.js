@@ -2,7 +2,7 @@ const service=require("../service");
 
 const getCoordinates= async (req,res,next)=>{
   try{
-    const {address}= req.body;
+    const {address}= req.query;
     const coordinates=await service.getAddress(address);
     res.status(200).json(coordinates);
   }catch(err){
@@ -14,7 +14,7 @@ const getCoordinates= async (req,res,next)=>{
 const getDistanceAndTime= async (req,res,next)=>{
 
   try{
-    const {pickup,destination}= req.body;
+    const {pickup,destination}= req.query;
     const distanceAndTime=await service.getDistanceAndTime(pickup,destination);
     res.status(200).json(distanceAndTime);
   }catch(err){
@@ -25,7 +25,7 @@ const getDistanceAndTime= async (req,res,next)=>{
 
 const getAutoSuggestions = async (req, res, next) => {
   try {
-    const { input } = req.body; // ✅ You can also use req.query if you prefer GET
+    const { input } = req.query; // ✅ You can also use req.query if you prefer GET
     if (!input || input.trim() === "") {
       return res.status(400).json({ msg: "Input is required" });
     }
@@ -52,35 +52,5 @@ const getAutoSuggestions = async (req, res, next) => {
 };
 
 
-const calculateFare = async (req,res,next)=>{
-  try{
-    const { distance, duration, vehicleType='car' } = req.body;
-    const fareBreakdown = service.getFare(distance, duration, vehicleType);
-    res.status(200).json({
-      success: true,
-      data: {
-        distance: {
-          kilometers: parseFloat((distance/1000).toFixed(2)),
-          meters: distance
-        },
-        duration: {
-          minutes: parseFloat((duration/60).toFixed(2)),
-          seconds: duration
-        },
-        vehicleType,
-        fare: fareBreakdown,
-        breakdown: {
-          distance_fare: fareBreakdown.distance_fare,
-          time_fare: fareBreakdown.time_fare,
-          base_fare: fareBreakdown.base_fare,
-          total_fare: fareBreakdown.total_fare
-        }
-      }
-    });
-  }catch(err){
-    console.error(err);
-    res.status(500).json({success:false, message:'Error calculating fare'});
-  }
-}
 
-module.exports={getCoordinates,getDistanceAndTime,getAutoSuggestions, calculateFare};  
+module.exports={getCoordinates,getDistanceAndTime,getAutoSuggestions};  

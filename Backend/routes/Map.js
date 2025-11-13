@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { getCoordinates, getDistanceAndTime, gtAutoSuggestions, calculateFare, getAutoSuggestions } = require("../Controllers/mapController");
-// const CaptainLoginAuth = require("../middleware/CaptainLoginAuth");
+const { getCoordinates, getDistanceAndTime, calculateFare, getAutoSuggestions } = require("../Controllers/mapController");
 const LoginAuth = require("../middleware/UserLoginAuth");
+
 
 // router.post("/getcoordinates",CaptainLoginAuth, getCoordinates);
 // router.post("/distancetime",CaptainLoginAuth, getDistanceAndTime);
@@ -10,8 +10,7 @@ const LoginAuth = require("../middleware/UserLoginAuth");
 // router.post("/get-suggestions",CaptainLoginAuth, gtAutoSuggestions);
 // module.exports = router;
 
-router.get("/getcoordinates",getCoordinates);
-router.get("/distancetime", getDistanceAndTime);
-router.get("/calculatefare",LoginAuth, calculateFare);
-router.get("/getsuggestions", getAutoSuggestions);
+router.get("/getcoordinates",LoginAuth,getCoordinates);
+router.get("/distancetime", LoginAuth,getDistanceAndTime);
+router.get("/getsuggestions",LoginAuth,getAutoSuggestions);
 module.exports = router;

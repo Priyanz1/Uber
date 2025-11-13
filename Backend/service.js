@@ -1,5 +1,6 @@
 const axios = require('axios');
 const RidingModel = require('./Models/RidengModel');
+const crypto = require('crypto');
 
  
 
@@ -74,42 +75,40 @@ const getDistanceAndTime = async (pickup, destination) => {
 };
 
  
- 
+ const getFare=async (pickup, destination)=>{
 
-const calculateFare = (distanceInKm, durationInMinutes, vehicleType) => {
-  const rates = {
-    auto: { name: 'Auto Rickshaw', baseFare: 15, perKm: 12, perMinute: 1, description: 'Economical 3-wheeler' },
-    car: { name: 'Standard Car', baseFare: 25, perKm: 20, perMinute: 2, description: '4-wheeler sedan' },
-    bike: { name: 'Motorcycle', baseFare: 20, perKm: 15, perMinute: 1.5, description: '2-wheeler bike' },
-  };
-
-  const rate = rates[vehicleType] || rates.car;
-
-  const distanceFare = distanceInKm * rate.perKm;
-  const timeFare = durationInMinutes * rate.perMinute;
-  const totalFare = rate.baseFare + distanceFare + timeFare;
-
-  return {
-    vehicle_name: rate.name,
-    vehicle_description: rate.description,
-    base_fare: rate.baseFare,
-    distance_fare: parseFloat(distanceFare.toFixed(2)),
-    time_fare: parseFloat(timeFare.toFixed(2)),
-    total_fare: parseFloat(totalFare.toFixed(2)),
-    currency: 'INR',
-    vehicle_type: vehicleType,
-    pricing: { per_km: rate.perKm, per_minute: rate.perMinute },
-  };
-};
-
-const getFare = (distance, duration, vehicleType = 'car') => {
-  if (!distance || !duration) {
-    throw new Error('Distance and duration are required');
+  if (!pickup || !destination) {
+      throw new Error('Pickup and destination are required');
   }
-  const distanceInKm = distance / 1000;
-  const durationInMinutes = duration / 60;
-  return calculateFare(distanceInKm, durationInMinutes, vehicleType);
-};
+
+  const distanceTime = await mapService.getDistanceTime(pickup, destination);
+
+  const baseFare = {
+      auto: 30,
+      car: 50,
+      moto: 20
+  };
+
+  const perKmRate = {
+      auto: 10,
+      car: 15,
+      moto: 8
+  };
+
+  const perMinuteRate = {
+      auto: 2,
+      car: 3,
+      moto: 1.5
+  };
+
+  const fare = {
+      auto: Math.round(baseFare.auto + ((distanceTime.distance.value / 1000) * perKmRate.auto) + ((distanceTime.duration.value / 60) * perMinuteRate.auto)),
+      car: Math.round(baseFare.car + ((distanceTime.distance.value / 1000) * perKmRate.car) + ((distanceTime.duration.value / 60) * perMinuteRate.car)),
+      moto: Math.round(baseFare.moto + ((distanceTime.distance.value / 1000) * perKmRate.moto) + ((distanceTime.duration.value / 60) * perMinuteRate.moto))
+  };
+
+  return fare;
+}
 
 
 const getAutoSuggestions = async (input) => {
@@ -137,23 +136,26 @@ const getAutoSuggestions = async (input) => {
 
 
 
-const createRide = async ({ user, pickup, destination, vehicleType = 'car' }) => {
-  if (!user || !pickup || !destination) {
+const createRide = async ({ userId, pickup, destination, vehicleType}) => {
+  if (!user || !pickup || !destination || !vehicleType) {
     throw new Error('data not received');
   }
-  const summary = await getDistanceAndTime(pickup, destination);
-  const distanceMeters = summary.distance.value;
-  const durationSeconds = summary.duration.value;
-  const fareBreakdown = getFare(distanceMeters, durationSeconds, vehicleType);
 
+const getOtp=async (num)=>{
+    function generateOtp(num) {
+        const otp = crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
+        return otp;
+    }
+    return generateOtp(num);
+}
+
+   const fare=await getFare(pickup,destination);
   const ride = await RidingModel.create({
-    user,
+    user:userId,
     pickup,
     destination,
-    fare: fareBreakdown.total_fare, 
-    distance: distanceMeters,
-    duration: durationSeconds,
-    status: 'pending',
+    otp: getOtp(6),
+    fare:fare[vehicleType]
   });
   return ride;
 };
