@@ -74,6 +74,7 @@ const getDistanceAndTime = async (pickup, destination) => {
   };
 };
 
+
  
  const getFare=async (pickup, destination)=>{
 

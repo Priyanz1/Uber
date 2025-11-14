@@ -11,4 +11,18 @@ const createRide=async (req,res,next)=>{
   res.status(404).json({msg:"riding not created"});
 }
 }
-module.exports={createRide};
+
+const fareCon = async (req, res) => {
+  try {
+    const { pickup, destination } = req.query;
+
+    const fare = await service.getFare(pickup, destination);
+
+    res.json({ success: true, fare });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+module.exports={createRide,fareCon};
