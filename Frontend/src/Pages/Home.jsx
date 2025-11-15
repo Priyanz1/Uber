@@ -44,30 +44,49 @@ function Home() {
   };
 
   useEffect(() => {
-    if (pickup && destination) {
-      fetchFare(); 
-    }
+    if (pickup && destination) fetchFare();
   }, [pickup, destination]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (pickup && destination) {
-      setStep(2);
-    }
+    if (pickup && destination) setStep(2);
   };
 
-  const handleVehicleSelect = async (type) => {
+  const handleVehicleSelect = (type) => {
     setVehicle(type);
     setStep(3);
-
-    if (fareval && fareval[type]) {
-      setfareval(fareval[type]);
-    }
+    if (fareval && fareval[type]) setfareval(fareval[type]);
   };
 
-  const confirmRide = () => setStep(4);
+  const confirmRide = async () => {
+    setStep(4);
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/ride/create",
+        {
+          pickup,
+          destination,
+          vehicleType: vehicle
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
+      );
+  
+      console.log("Ride created:", response.data);
+  
+    } catch (error) {
+      console.log("Ride error:", error);
+    }
+  };
+  
+  
   const handleBack = () => step > 1 && setStep(step - 1);
 
+  // -------- PICKUP SEARCH ----------
   const searchPickup = async (e) => {
     const value = e.target.value;
     setPickup(value);
@@ -92,6 +111,7 @@ function Home() {
     }
   };
 
+  // -------- DESTINATION SEARCH ----------
   const searchDestination = async (e) => {
     const value = e.target.value;
     setDestination(value);
@@ -132,7 +152,10 @@ function Home() {
 
   return (
     <div className="min-h-screen w-screen bg-gray-900 flex justify-center items-center">
-      <div ref={panelRef} className="bg-gray-800 text-white p-8 rounded-2xl w-[90%] sm:w-[50%] relative">
+      <div
+        ref={panelRef}
+        className="bg-gray-800 text-white p-8 rounded-2xl w-[90%] sm:w-[50%] relative"
+      >
 
         {/* STEP 1 */}
         {step === 1 && (
@@ -150,13 +173,17 @@ function Home() {
               />
 
               {showPickupBox && pickupSuggestions.length > 0 && (
-                <div ref={pickupBoxRef} className="absolute w-full bg-white text-black rounded shadow max-h-64 overflow-y-auto">
+                <div
+                  ref={pickupBoxRef}
+                  className="absolute z-50 w-full bg-white text-black rounded shadow max-h-64 overflow-y-auto"
+                >
                   {pickupSuggestions.map((item, i) => (
                     <div
                       key={i}
                       className="p-2 hover:bg-gray-200 cursor-pointer"
                       onClick={() => {
-                        setPickup(item.name);
+                        const clean = item.name.split(",")[0].trim();
+                        setPickup(clean);
                         setShowPickupBox(false);
                       }}
                     >
@@ -178,13 +205,17 @@ function Home() {
               />
 
               {showDestBox && destSuggestions.length > 0 && (
-                <div ref={destBoxRef} className="absolute w-full bg-white text-black rounded shadow max-h-64 overflow-y-auto">
+                <div
+                  ref={destBoxRef}
+                  className="absolute z-50 w-full bg-white text-black rounded shadow max-h-64 overflow-y-auto"
+                >
                   {destSuggestions.map((item, i) => (
                     <div
                       key={i}
                       className="p-2 hover:bg-gray-200 cursor-pointer"
                       onClick={() => {
-                        setDestination(item.name);
+                        const clean = item.name.split(",")[0].trim();
+                        setDestination(clean);
                         setShowDestBox(false);
                       }}
                     >
@@ -201,26 +232,42 @@ function Home() {
           </form>
         )}
 
+        {/* STEP 2 */}
         {step === 2 && (
           <div className="text-center">
             <h2 className="text-xl font-semibold mb-6">Choose your vehicle</h2>
 
             <div className="flex justify-around">
-              <div onClick={() => handleVehicleSelect("auto")} className="bg-gray-700 p-5 rounded-xl hover:bg-blue-600 cursor-pointer">
+              <div
+                onClick={() => handleVehicleSelect("auto")}
+                className="bg-gray-700 p-5 rounded-xl hover:bg-blue-600 cursor-pointer"
+              >
                 🛺 Auto
               </div>
-              <div onClick={() => handleVehicleSelect("car")} className="bg-gray-700 p-5 rounded-xl hover:bg-blue-600 cursor-pointer">
+              <div
+                onClick={() => handleVehicleSelect("car")}
+                className="bg-gray-700 p-5 rounded-xl hover:bg-blue-600 cursor-pointer"
+              >
                 🚗 Car
               </div>
-              <div onClick={() => handleVehicleSelect("moto")} className="bg-gray-700 p-5 rounded-xl hover:bg-blue-600 cursor-pointer">
+              <div
+                onClick={() => handleVehicleSelect("moto")}
+                className="bg-gray-700 p-5 rounded-xl hover:bg-blue-600 cursor-pointer"
+              >
                 🏍️ Moto
               </div>
             </div>
 
-            <button onClick={handleBack} className="mt-6 bg-gray-700 px-5 py-2 rounded">⬅ Back</button>
+            <button
+              onClick={handleBack}
+              className="mt-6 bg-gray-700 px-5 py-2 rounded"
+            >
+              ⬅ Back
+            </button>
           </div>
         )}
 
+        {/* STEP 3 */}
         {step === 3 && (
           <div className="text-center">
             <h2 className="text-xl font-semibold mb-4">Ride Details 📋</h2>
@@ -231,19 +278,35 @@ function Home() {
             <p><b>Fare:</b> ₹{fareval}</p>
 
             <div className="flex justify-between mt-6">
-              <button onClick={handleBack} className="bg-gray-700 px-5 py-2 rounded">⬅ Back</button>
-              <button onClick={confirmRide} className="bg-green-600 px-5 py-2 rounded">Confirm Ride</button>
+              <button
+                onClick={handleBack}
+                className="bg-gray-700 px-5 py-2 rounded"
+              >
+                ⬅ Back
+              </button>
+              <button
+                onClick={confirmRide}
+                className="bg-green-600 px-5 py-2 rounded"
+              >
+                Confirm Ride
+              </button>
             </div>
           </div>
         )}
 
+        {/* STEP 4 */}
         {step === 4 && (
           <div className="text-center space-y-5">
             <h2 className="text-xl font-semibold">Searching for Captain...</h2>
             <div className="flex justify-center">
               <div className="animate-spin border-b-4 border-blue-500 rounded-full h-12 w-12"></div>
             </div>
-            <button onClick={handleBack} className="bg-gray-700 px-5 py-2 rounded">⬅ Back</button>
+            <button
+              onClick={handleBack}
+              className="bg-gray-700 px-5 py-2 rounded"
+            >
+              ⬅ Back
+            </button>
           </div>
         )}
       </div>

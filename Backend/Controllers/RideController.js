@@ -2,7 +2,7 @@
 const service=require("../service");
 
 const createRide=async (req,res,next)=>{
-  const { userId, pickup, destination, vehicleType } = req.body;
+  const {  pickup, destination, vehicleType } = req.body;
  try{
   const ride = await service.createRide({ user: req.user._id, pickup, destination, vehicleType });
   return res.status(201).json(ride);
