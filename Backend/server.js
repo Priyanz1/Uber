@@ -14,6 +14,9 @@ const MapRouting = require('./routes/Map');
 // Import database connection
 const connectDB = require('./DB/dbconnect');
 
+// Import socket initialization
+const { initializeSocket } = require('./socket');
+
 // Create Express app
 const app = express();
 
@@ -87,6 +90,19 @@ const server = app.listen(PORT, () => {
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`📊 Health check: http://localhost:${PORT}/health`);
 });
+
+// Initialize Socket.IO
+const corsOptions = {
+    origin: [
+        process.env.FRONTEND_URL || "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174"
+    ],
+    credentials: true
+};
+initializeSocket(server, corsOptions);
 
 // Graceful shutdown
 process.on('SIGINT', () => {

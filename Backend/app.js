@@ -10,6 +10,7 @@ const MapRouting = require("./routes/Map");
 const CreateRiding = require("./routes/CreateRiding")
 const cookieParser = require("cookie-parser");
 const connectDB = require("./DB/dbconnect");
+const { initializeSocket } = require("./socket");
 connectDB();
 
 // CORS configuration to fix policy violations
@@ -32,10 +33,17 @@ app.use("/map", MapRouting);
 app.use("/ride", CreateRiding);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT,()=>{
+const server = app.listen(PORT,()=>{
     console.log(`System is running on http://localhost:${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 })
+
+// Initialize Socket.IO
+const corsOptions = {
+    origin: "http://localhost:5173",
+    credentials: true
+};
+initializeSocket(server, corsOptions);
 
 // module.exports = app;
 
