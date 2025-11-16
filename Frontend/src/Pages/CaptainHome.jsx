@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
-
+import {CaptainDataContext} from "../context/CaptainContext";
 function CaptainHome() {
+  const {captain}=useContext(CaptainDataContext);
   const navigate = useNavigate(); // ✅ Initialize navigate
   const [step, setStep] = useState("home"); // home | rides | confirm | riding
   const [selectedRide, setSelectedRide] = useState(null);
@@ -50,18 +51,53 @@ function CaptainHome() {
       }}
     >
       <div className="bg-white bg-opacity-90 p-6 rounded-xl w-96 shadow-xl text-center text-gray-900">
-        {/* ========== Step 1: Captain Home ========== */}
-        {step === "home" && (
-          <>
-            <h1 className="text-2xl font-semibold">Welcome, Captain 🚖</h1>
-            <button
-              onClick={() => setStep("rides")}
-              className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-            >
-              Show Available Rides
-            </button>
-          </>
-        )}
+      {step === "home" && (
+  <>
+    <h1 className="text-2xl font-semibold">Welcome, Captain 🚖</h1>
+
+    {/* Captain Info Box */}
+    <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow space-y-1">
+      <p className="text-lg font-semibold">👨‍✈️ {captain.name}</p>
+
+      <p className="text-md text-green-600 font-medium">
+        💰 Earnings Today: ₹earningsToday
+      </p>
+
+      <p className="text-md text-blue-600 font-medium">
+        📊 Total Earnings: ₹totalEarnings
+      </p>
+    </div>
+
+    <button
+      onClick={() => setStep("rides")}
+      className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+    >
+      Show Available Rides
+    </button>
+  </>
+)}
+
+
+{/* {step === "home" && (
+  <>
+    <h1 className="text-2xl font-semibold">Welcome, Captain 🚖</h1>
+
+    Captain Info Box
+    <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow">
+      <p className="text-lg font-semibold">👨‍✈️ captain</p>
+      <p className="text-md text-green-600 font-medium">
+        💰 Earnings Today: ₹earnings
+      </p>
+    </div>
+
+    <button
+      onClick={() => setStep("rides")}
+      className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+    >
+      Show Available Rides
+    </button>
+  </>
+)} */}
 
         {/* ========== Step 2: Show Rides ========== */}
         {step === "rides" && (

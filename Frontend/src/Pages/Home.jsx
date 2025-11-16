@@ -296,19 +296,42 @@ function Home() {
 
         {/* STEP 4 */}
         {step === 4 && (
-          <div className="text-center space-y-5">
-            <h2 className="text-xl font-semibold">Searching for Captain...</h2>
-            <div className="flex justify-center">
-              <div className="animate-spin border-b-4 border-blue-500 rounded-full h-12 w-12"></div>
-            </div>
-            <button
-              onClick={handleBack}
-              className="bg-gray-700 px-5 py-2 rounded"
-            >
-              ⬅ Back
-            </button>
-          </div>
-        )}
+  <div className="text-center space-y-5">
+
+    {/* 🔹 Fare & Location Details Box */}
+    <div className="bg-gray-800 p-4 rounded-xl shadow-md text-left space-y-2">
+      <h3 className="text-lg font-semibold text-white">Ride Details</h3>
+
+      <p className="text-gray-300">
+        <span className="font-medium text-white">Pickup:</span> {pickup}
+      </p>
+
+      <p className="text-gray-300">
+        <span className="font-medium text-white">Destination:</span> {destination}
+      </p>
+
+      <p className="text-gray-300">
+        <span className="font-medium text-white">Estimated Fare:</span> ₹{fareval}
+      </p>
+    </div>
+
+    {/* 🔹 Searching Loader */}
+    <h2 className="text-xl font-semibold text-white">Searching for Captain...</h2>
+
+    <div className="flex justify-center">
+      <div className="animate-spin border-b-4 border-blue-500 rounded-full h-12 w-12"></div>
+    </div>
+
+    {/* 🔹 Back Button */}
+    <button
+      onClick={handleBack}
+      className="bg-gray-700 px-5 py-2 rounded text-white"
+    >
+      ⬅ Back
+    </button>
+  </div>
+)}
+
       </div>
     </div>
   );
