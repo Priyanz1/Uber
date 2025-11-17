@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
-const SocketContext = createContext(null);
+export const SocketContext = createContext(null);
 
 export const useSocket = () => {
   const context = useContext(SocketContext);
@@ -27,11 +27,13 @@ const SocketProvider = ({ children }) => {
     socketRef.current = socket;
 
     const handleConnect = () => {
+        console.log("connected to server");
       setIsConnected(true);
       setConnectionError(null);
     };
 
     const handleDisconnect = () => {
+        console.log("disconnected to server");
       setIsConnected(false);
     };
 
@@ -43,13 +45,13 @@ const SocketProvider = ({ children }) => {
     socket.on("disconnect", handleDisconnect);
     socket.on("connect_error", handleError);
 
-    return () => {
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
-      socket.off("connect_error", handleError);
-      socket.disconnect();
-      socketRef.current = null;
-    };
+    // return () => {
+    //   socket.off("connect", handleConnect);
+    //   socket.off("disconnect", handleDisconnect);
+    //   socket.off("connect_error", handleError);
+    //   socket.disconnect();
+    //   socketRef.current = null;
+    // };
   }, []);
 
   const sendMessage = useCallback((eventName, payload) => {

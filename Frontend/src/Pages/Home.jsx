@@ -1,7 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import axios from "axios";
+import {SocketContext} from '../context/SocketContext'
+import { UserDataContext } from '../context/UserContext';
 
 function Home() {
   const [pickup, setPickup] = useState("");
@@ -20,6 +22,13 @@ function Home() {
   const panelRef = useRef(null);
   const pickupBoxRef = useRef(null);
   const destBoxRef = useRef(null);
+  const {sendMessage,subscribeToEvent} = useContext(SocketContext);
+  const {user} =useContext(UserDataContext);
+   
+  useEffect(()=>{ 
+    sendMessage("join",{userType:"user",userId:user._id})
+  },[user])
+ 
 
   useGSAP(() => {
     gsap.fromTo(
