@@ -67,7 +67,6 @@ function CaptainHome() {
         📊 Total Earnings: ₹totalEarnings
       </p>
     </div>
-
     <button
       onClick={() => setStep("rides")}
       className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"

@@ -36,8 +36,8 @@ const initializeSocket = (server, corsOptions = {}) => {
            });
         }else if(userType === 'captain'){
             await CaptainModel.findByIdAndUpadte(userId,{socketId:socket.id});
-        };
-    })
+        }
+    });
 
     socket.on('disconnect', () => {
       console.log(`❌ Client disconnected: ${socket.id}`);
