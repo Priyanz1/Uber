@@ -4,12 +4,6 @@ const CaptainModel = require('./Models/CaptainModel');
 
 let io = null;
 
-/**
- * Initialize Socket.IO server
- * @param {http.Server} server - HTTP server instance
- * @param {Object} corsOptions - CORS configuration options
- * @returns {Server} Socket.IO server instance
- */
 const initializeSocket = (server, corsOptions = {}) => {
   if (io) {
     console.log('Socket.IO already initialized');
@@ -19,7 +13,7 @@ const initializeSocket = (server, corsOptions = {}) => {
   io = new Server(server, {
     cors: {
       origin: corsOptions.origin || ["http://localhost:5173"],
-      credentials: corsOptions.credentials !== undefined ? corsOptions.credentials : true,
+      credentials: corsOptions.credentials ?? true,
       methods: ['GET', 'POST']
     }
   });
@@ -27,23 +21,36 @@ const initializeSocket = (server, corsOptions = {}) => {
   io.on('connection', (socket) => {
     console.log(`✅ Client connected: ${socket.id}`);
 
-
-    socket.on('join',async (data)=>{
-        const {userId,userType}=data;
-        if(userType === 'user'){
-           await UserModel.findByIdAndUpdate(userId,{
-            socketId:SourceBufferList.id
-           });
-        }else if(userType === 'captain'){
-            await CaptainModel.findByIdAndUpadte(userId,{socketId:socket.id});
+    // JOIN EVENT
+    socket.on('join', async ({ userId, userType }) => {
+      try {
+        if (userType === 'user') {
+          await UserModel.findByIdAndUpdate(
+            userId,
+            { socketId: socket.id },
+            { new: true }
+          );
+          console.log(`👤 User joined with socket: ${socket.id}`);
         }
+
+        if (userType === 'captain') {
+          await CaptainModel.findByIdAndUpdate(
+            userId,
+            { socketId: socket.id },
+            { new: true }
+          );
+          console.log(`🧑‍✈️ Captain joined with socket: ${socket.id}`);
+        }
+
+      } catch (err) {
+        console.error("Error in join event:", err);
+      }
     });
 
     socket.on('disconnect', () => {
       console.log(`❌ Client disconnected: ${socket.id}`);
     });
 
-    // Handle custom events here if needed
     socket.on('error', (error) => {
       console.error(`Socket error for ${socket.id}:`, error);
     });
@@ -53,13 +60,7 @@ const initializeSocket = (server, corsOptions = {}) => {
   return io;
 };
 
-/**
- * Send message to a specific socket ID
- * @param {string} socketId - The socket ID to send message to
- * @param {string} event - Event name
- * @param {any} data - Data to send
- * @returns {boolean} Success status
- */
+
 const sendMessageToSocketId = (socketId, event, data) => {
   if (!io) {
     console.error('Socket.IO not initialized. Call initializeSocket first.');
@@ -85,4 +86,3 @@ module.exports = {
   initializeSocket,
   sendMessageToSocketId
 };
-

@@ -26,42 +26,37 @@ const SocketProvider = ({ children }) => {
 
     socketRef.current = socket;
 
-    const handleConnect = () => {
-        console.log("connected to server");
+    socket.on("connect", () => {
+      console.log("connected");
       setIsConnected(true);
-      setConnectionError(null);
-    };
+    });
 
-    const handleDisconnect = () => {
-        console.log("disconnected to server");
+    socket.on("disconnect", () => {
+      console.log("disconnected");
       setIsConnected(false);
-    };
+    });
 
-    const handleError = (error) => {
-      setConnectionError(error?.message ?? "Unable to connect to socket server");
-    };
+    socket.on("connect_error", (err) => {
+      setConnectionError(err.message);
+    });
 
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
-    socket.on("connect_error", handleError);
-
-    // return () => {
-    //   socket.off("connect", handleConnect);
-    //   socket.off("disconnect", handleDisconnect);
-    //   socket.off("connect_error", handleError);
-    //   socket.disconnect();
-    //   socketRef.current = null;
-    // };
   }, []);
 
+  // -----------------------------------------------
+  // SEND MESSAGE FUNCTION
+  // -----------------------------------------------
   const sendMessage = useCallback((eventName, payload) => {
     if (!socketRef.current) return;
     socketRef.current.emit(eventName, payload);
   }, []);
 
+  // -----------------------------------------------
+  // SUBSCRIBE TO EVENT
+  // -----------------------------------------------
   const subscribeToEvent = useCallback((eventName, handler) => {
     if (!socketRef.current) return () => {};
     socketRef.current.on(eventName, handler);
+
     return () => {
       socketRef.current?.off(eventName, handler);
     };
@@ -82,4 +77,3 @@ const SocketProvider = ({ children }) => {
 };
 
 export default SocketProvider;
-

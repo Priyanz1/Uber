@@ -13,7 +13,6 @@ const connectDB = require("./DB/dbconnect");
 const { initializeSocket } = require("./socket");
 connectDB();
 
-// CORS configuration to fix policy violations
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -21,7 +20,6 @@ app.use(cors({
   }));
 
   
-// app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,7 +36,6 @@ const server = app.listen(PORT,()=>{
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 })
 
-// Initialize Socket.IO
 const corsOptions = {
     origin: "http://localhost:5173",
     credentials: true
@@ -46,5 +43,3 @@ const corsOptions = {
 initializeSocket(server, corsOptions);
 
 // module.exports = app;
-
-

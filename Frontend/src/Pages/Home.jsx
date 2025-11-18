@@ -22,13 +22,20 @@ function Home() {
   const panelRef = useRef(null);
   const pickupBoxRef = useRef(null);
   const destBoxRef = useRef(null);
-  const {sendMessage,subscribeToEvent} = useContext(SocketContext);
+  const {socket} = useContext(SocketContext);
   const {user} =useContext(UserDataContext);
    
-  useEffect(()=>{ 
-    sendMessage("join",{userType:"user",userId:user._id})
-  },[user])
- 
+  useEffect(() => {
+    if (!socket || !user?._id) return; 
+    socket.emit("join", {
+      userType: "user",
+      userId: user._id,
+    });
+  
+    console.log("JOIN EVENT SENT");
+  }, [socket, user]);
+  
+  
 
   useGSAP(() => {
     gsap.fromTo(
