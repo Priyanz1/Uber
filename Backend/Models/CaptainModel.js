@@ -22,7 +22,14 @@ const captainSchema = new mongoose.Schema(
     socketId: {
       type: String,
   },
-
+  location:{
+     ltd:{
+        Type:Number,
+     },
+     lng:{
+      Type:Number,
+   }
+  },
     vehicle: {
       type: {
         type: String, // e.g. "car", "bike"

@@ -1,6 +1,7 @@
 const axios = require('axios');
 const RidingModel = require('./Models/RidengModel');
 const crypto = require('crypto');
+const CaptainModel = require('./Models/CaptainModel');
 
  
 
@@ -169,6 +170,16 @@ const createRide = async ({ user, pickup, destination, vehicleType }) => {
   return ride;
 };
 
+const getCaptainInTheRadius= async (ltd,lng,radius)=>{
+  const captain=CaptainModel.find({
+    location:{
+      $geoWithin:{
+        $centerSphere: [[ltd,lng],radius/3963.2]
+      }
+    }
+  })
+  return captain;
+}
 
 module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions, createRide };
 
