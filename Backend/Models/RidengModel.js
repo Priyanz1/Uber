@@ -46,6 +46,9 @@ const ridingSchema = new mongoose.Schema(
     signature: {
       type: String,
     },
+    socketId: {
+      type: String,
+  },
     otp:{
       type:String,
       select:false,

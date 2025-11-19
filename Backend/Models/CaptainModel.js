@@ -19,6 +19,9 @@ const captainSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    socketId: {
+      type: String,
+  },
 
     vehicle: {
       type: {

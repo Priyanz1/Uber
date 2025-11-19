@@ -1,6 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 import {CaptainDataContext} from "../context/CaptainContext";
+import {SocketContext } from "../context/SocketContext";
 function CaptainHome() {
   const {captain}=useContext(CaptainDataContext);
   const navigate = useNavigate(); // ✅ Initialize navigate
@@ -22,6 +23,16 @@ function CaptainHome() {
       vehicle: "Bike",
     },
   ]);
+
+  const {socket} = useContext(SocketContext);
+
+   useEffect(()=>{
+      if(!captain || !socket) return;
+      socket.emit("join",{
+        userType:"captain",
+        userId:captain._id
+      })
+   },[socket,captain]);
 
   // ✅ OTP states
   const [otp, setOtp] = useState("");
