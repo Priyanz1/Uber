@@ -32,6 +32,43 @@ function CaptainHome() {
         userType:"captain",
         userId:captain._id
       })
+
+
+   // Set up an interval to send captain's location every 10 seconds via socket.io
+   let intervalId;
+   if (captain && socket) {
+     // Helper function to get current geolocation and emit to server
+     const sendLocation = () => {
+       if (navigator.geolocation) {
+         navigator.geolocation.getCurrentPosition(
+           (position) => {
+             socket.emit("update-location-captain", {
+               userId: captain._id,
+               location: {
+                 ltd: position.coords.latitude,
+                 lng: position.coords.longitude,
+               },
+             });
+           },
+           (error) => {
+             // Optionally handle error
+             console.error("Geolocation error:", error);
+           }
+         );
+       }
+     };
+
+     // Immediately send location on mount
+     sendLocation();
+
+     // Set up interval for every 10 seconds
+    //  intervalId = setInterval(sendLocation, 10000);
+   }
+
+   // Cleanup interval on unmount or deps change
+   return () => {
+     if (intervalId) clearInterval(intervalId);
+   };
    },[socket,captain]);
 
   // ✅ OTP states
