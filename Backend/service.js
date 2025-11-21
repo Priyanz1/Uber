@@ -174,13 +174,13 @@ const getCaptainInTheRadius= async (ltd,lng,radius)=>{
   const captain=CaptainModel.find({
     location:{
       $geoWithin:{
-        $centerSphere: [[ltd,lng],radius/3963.2]
+        $centerSphere: [[ltd,lng],radius/6371]
       }
     }
   })
   return captain;
 }
 
-module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions, createRide };
+module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions, createRide ,getCaptainInTheRadius,getOtp};
 
 

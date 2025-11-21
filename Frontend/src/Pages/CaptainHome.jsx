@@ -42,6 +42,13 @@ function CaptainHome() {
        if (navigator.geolocation) {
          navigator.geolocation.getCurrentPosition(
            (position) => {
+          console.log( {
+               userId: captain._id,
+               location: {
+                 ltd: position.coords.latitude,
+                 lng: position.coords.longitude,
+               },
+             })   
              socket.emit("update-location-captain", {
                userId: captain._id,
                location: {
@@ -61,8 +68,8 @@ function CaptainHome() {
      // Immediately send location on mount
      sendLocation();
 
-     // Set up interval for every 10 seconds
-    //  intervalId = setInterval(sendLocation, 10000);
+     intervalId = setInterval(sendLocation, 10000);
+     sendLocation();
    }
 
    // Cleanup interval on unmount or deps change

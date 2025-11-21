@@ -15,9 +15,12 @@ connectDB();
 
 
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
-  }));
+  origin: [
+    "http://localhost:5173",
+    "https://4nhvrj8j-5173.inc1.devtunnels.ms"
+  ],
+  credentials: true
+}));
 
   
 

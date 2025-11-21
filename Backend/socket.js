@@ -74,7 +74,27 @@ const initializeSocket = (server, corsOptions = {}) => {
 };
 
 
-const sendMessageToSocketId = (socketId, event, data) => {
+// const sendMessageToSocketId = (socketId, event, data) => {
+//   if (!io) {
+//     console.error('Socket.IO not initialized. Call initializeSocket first.');
+//     return false;
+//   }
+
+//   if (!socketId) {
+//     console.error('Socket ID is required');
+//     return false;
+//   }
+
+//   try {
+//     io.to(socketId).emit(event, data);
+//     console.log(`📤 Message sent to ${socketId} on event: ${event}`);
+//     return true;
+//   } catch (error) {
+//     console.error(`Error sending message to ${socketId}:`, error);
+//     return false;
+//   }
+// };
+const sendMessageToSocketId = (socketId, message) => {
   if (!io) {
     console.error('Socket.IO not initialized. Call initializeSocket first.');
     return false;
@@ -85,14 +105,12 @@ const sendMessageToSocketId = (socketId, event, data) => {
     return false;
   }
 
-  try {
-    io.to(socketId).emit(event, data);
-    console.log(`📤 Message sent to ${socketId} on event: ${event}`);
-    return true;
-  } catch (error) {
-    console.error(`Error sending message to ${socketId}:`, error);
-    return false;
+    if(io){
+    io.to(socketId).emit('message', message);
+  }else{
+    console.error('Socket.IO instance is not available.');
   }
+  
 };
 
 module.exports = {
