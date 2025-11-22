@@ -42,13 +42,6 @@ function CaptainHome() {
        if (navigator.geolocation) {
          navigator.geolocation.getCurrentPosition(
            (position) => {
-          console.log( {
-               userId: captain._id,
-               location: {
-                 ltd: position.coords.latitude,
-                 lng: position.coords.longitude,
-               },
-             })   
              socket.emit("update-location-captain", {
                userId: captain._id,
                location: {
@@ -73,10 +66,14 @@ function CaptainHome() {
    }
 
    // Cleanup interval on unmount or deps change
-   return () => {
-     if (intervalId) clearInterval(intervalId);
-   };
+  //  return () => {
+  //    if (intervalId) clearInterval(intervalId);
+  //  };
    },[socket,captain]);
+
+   socket.on('new-ride',(data)=>{
+    console.log("Message from server:",data);
+   });
 
   // ✅ OTP states
   const [otp, setOtp] = useState("");

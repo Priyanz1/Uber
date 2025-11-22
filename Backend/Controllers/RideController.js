@@ -10,7 +10,7 @@ const createRide=async (req,res,next)=>{
   const pickupCoords = await service.getAddress(pickup);
   console.log(pickupCoords);
   const captainsInRadius = await service.getCaptainInTheRadius(pickupCoords.lat, pickupCoords.lng, 2);
-   ride.otp="";
+   ride.otp="";  
 
     captainsInRadius.map(async (captain) =>
       sendMessageToSocketId(captain.socketId, { 

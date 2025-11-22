@@ -94,19 +94,9 @@ const initializeSocket = (server, corsOptions = {}) => {
 //     return false;
 //   }
 // };
-const sendMessageToSocketId = (socketId, message) => {
-  if (!io) {
-    console.error('Socket.IO not initialized. Call initializeSocket first.');
-    return false;
-  }
-
-  if (!socketId) {
-    console.error('Socket ID is required');
-    return false;
-  }
-
+const sendMessageToSocketId = (socketId, messageObj) => {
     if(io){
-    io.to(socketId).emit('message', message);
+    io.to(socketId).emit(messageObj.event, messageObj.data);
   }else{
     console.error('Socket.IO instance is not available.');
   }
