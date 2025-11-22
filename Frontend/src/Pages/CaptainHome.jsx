@@ -7,22 +7,7 @@ function CaptainHome() {
   const navigate = useNavigate(); // ✅ Initialize navigate
   const [step, setStep] = useState("home"); // home | rides | confirm | riding
   const [selectedRide, setSelectedRide] = useState(null);
-  const [availableRides, setAvailableRides] = useState([
-    {
-      id: 1,
-      pickup: "Indrapuri",
-      destination: "MP Nagar",
-      fare: "₹120",
-      vehicle: "Car",
-    },
-    {
-      id: 2,
-      pickup: "Bittan Market",
-      destination: "DB Mall",
-      fare: "₹90",
-      vehicle: "Bike",
-    },
-  ]);
+  const [ride,setride]=useState([]);
 
   const {socket} = useContext(SocketContext);
 
@@ -73,6 +58,8 @@ function CaptainHome() {
 
    socket.on('new-ride',(data)=>{
     console.log("Message from server:",data);
+    setride(data);
+    // setStep("rides");
    });
 
   // ✅ OTP states
@@ -129,37 +116,13 @@ function CaptainHome() {
 )}
 
 
-{/* {step === "home" && (
-  <>
-    <h1 className="text-2xl font-semibold">Welcome, Captain 🚖</h1>
-
-    Captain Info Box
-    <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow">
-      <p className="text-lg font-semibold">👨‍✈️ captain</p>
-      <p className="text-md text-green-600 font-medium">
-        💰 Earnings Today: ₹earnings
-      </p>
-    </div>
-
-    <button
-      onClick={() => setStep("rides")}
-      className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-    >
-      Show Available Rides
-    </button>
-  </>
-)} */}
-
-        {/* ========== Step 2: Show Rides ========== */}
-        {step === "rides" && (
+ {step === "rides" && (
           <div>
             <h2 className="text-xl mb-4 font-semibold">Available Rides</h2>
-            {availableRides.length === 0 ? (
+            {ride === null ? (
               <p className="text-gray-700">No rides available right now.</p>
             ) : (
-              availableRides.map((ride) => (
-                <div
-                  key={ride.id}
+               <div
                   className="border border-gray-400 bg-white p-3 m-2 rounded-lg shadow-md text-left text-gray-800"
                 >
                   <p>
@@ -171,9 +134,9 @@ function CaptainHome() {
                   <p>
                     <b>Fare:</b> {ride.fare}
                   </p>
-                  <p>
+                  {/* <p>
                     <b>Vehicle Requested:</b> {ride.vehicle}
-                  </p>
+                  </p> */}
 
                   <div className="mt-3 flex justify-between">
                     <button
@@ -187,13 +150,12 @@ function CaptainHome() {
                     </button>
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                      onClick={() => handleReject(ride.id)}
+                      onClick={() => handleReject(setride(null))}
                     >
                       Reject
                     </button>
                   </div>
-                </div>
-              ))
+                </div> 
             )}
 
             <button
@@ -204,6 +166,12 @@ function CaptainHome() {
             </button>
           </div>
         )}
+
+
+
+
+
+
 
         {/* ========== Step 3: Confirm Ride with OTP ========== */}
         {step === "confirm" && selectedRide && (
