@@ -37,5 +37,20 @@ const fareCon = async (req, res) => {
   }
 };
 
+const comfirmRide=async(req,res,next)=>{
+  const {rideId}=req.body;
+  try{
+    const ride=await service.comfirmRide(rideId,req.captain._id);
+    sendMessageToSocketId(ride.user.socketId,{
+      event:'ride-comfirmed',
+      data:ride
+    })
+    res.status(200).json(ride);
+  }catch(err){
+    console.error(err);
+    res.status(404).json({msg:"ride not comfirmed"});
+  }  
+}
 
-module.exports={createRide,fareCon};
+
+module.exports={createRide,fareCon,comfirmRide};

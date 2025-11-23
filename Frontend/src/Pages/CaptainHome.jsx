@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 import {CaptainDataContext} from "../context/CaptainContext";
 import {SocketContext } from "../context/SocketContext";
+import axios from "axios";
 function CaptainHome() {
   const {captain}=useContext(CaptainDataContext);
   const navigate = useNavigate(); // ✅ Initialize navigate
   const [step, setStep] = useState("home"); // home | rides | confirm | riding
   const [selectedRide, setSelectedRide] = useState(null);
-  const [ride,setride]=useState([]);
+  const [ride,setride]=useState(null);
 
   const {socket} = useContext(SocketContext);
 
@@ -76,8 +77,19 @@ function CaptainHome() {
   };
 
   // ✅ Function to navigate to riding route
-  const confirmRide = () => {
-    navigate("/captain/riding", { state: { ride: selectedRide } });
+  const confirmRide = async() => {
+    // navigate("/captain/riding", { state: { ride: selectedRide } });
+
+     const response= await axios.post("http://localhost:3000/ride/comfirm",{
+          rideId:selectedRide._id,
+          captainId:captain._id,
+      },{
+        headers:{
+           Authorization:`Bearer ${localStorage.getItem('token')}`
+          }
+     });
+
+    setStep("riding");
   };
 
   return (
@@ -168,11 +180,6 @@ function CaptainHome() {
         )}
 
 
-
-
-
-
-
         {/* ========== Step 3: Confirm Ride with OTP ========== */}
         {step === "confirm" && selectedRide && (
           <div>
@@ -189,6 +196,8 @@ function CaptainHome() {
             <p>
               <b>Vehicle Requested:</b> {selectedRide.vehicle}
             </p>
+
+
 
             {/* ✅ OTP Input BEFORE clicking Confirm */}
             <div className="mt-4">

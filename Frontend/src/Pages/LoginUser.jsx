@@ -2,11 +2,14 @@ import React, { useContext, useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
+// import { Socket } from "../context/SocketContext";
+
 export default function LoginUser() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate=useNavigate();
   const {user,setUser}=useContext(UserDataContext);
+
   const handleLogin =async (e) => {
     e.preventDefault();
    const newuser={email,password};

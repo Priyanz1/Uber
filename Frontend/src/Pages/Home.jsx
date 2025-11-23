@@ -15,6 +15,7 @@ function Home() {
 
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [destSuggestions, setDestSuggestions] = useState([]);
+  const [ride,setride]=useState(null);
 
   const [showPickupBox, setShowPickupBox] = useState(false);
   const [showDestBox, setShowDestBox] = useState(false);
@@ -59,9 +60,20 @@ function Home() {
     }
   };
 
-  useEffect(() => {
-    if (pickup && destination) fetchFare();
-  }, [pickup, destination]);
+    useEffect(()=>{
+       if (pickup && destination) fetchFare();
+       socket.emit("join",{
+        userType:"user",
+        userId:user._id
+       })
+  
+       socket.on("ride-comfirmed",(data)=>{
+         console.log("Ride confirmed:",data);
+         setride(data);
+          // setStep(4);
+         // You can add more logic here to update the UI or notify the user
+       });
+    },[user,pickup,destination])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -332,12 +344,26 @@ function Home() {
     </div>
 
     {/* 🔹 Searching Loader */}
-    <h2 className="text-xl font-semibold text-white">Searching for Captain...</h2>
+    {/* <h2 className="text-xl font-semibold text-white">Searching for Captain...</h2>
+
+    <div className="flex justify-center">
+      <div className="animate-spin border-b-4 border-blue-500 rounded-full h-12 w-12"></div>
+    </div> */}
+
+     {ride == null && (
+    <div className="text-center mt-4 text-gray-300">
+            <h2 className="text-xl font-semibold text-white">Searching for Captain...</h2>
 
     <div className="flex justify-center">
       <div className="animate-spin border-b-4 border-blue-500 rounded-full h-12 w-12"></div>
     </div>
+    </div>
+    )}
 
+    {ride != null && (
+        <div>{ride.user.name}</div>
+    )}
+ 
     {/* 🔹 Back Button */}
     <button
       onClick={handleBack}
