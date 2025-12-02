@@ -26,15 +26,15 @@ function Home() {
   const {socket} = useContext(SocketContext);
   const {user} =useContext(UserDataContext);
    
-  useEffect(() => {
-    if (!socket || !user?._id) return; 
-    socket.emit("join", {
-      userType: "user",
-      userId: user._id,
-    });
+  // useEffect(() => {
+  //   if (!socket || !user?._id) return; 
+  //   socket.emit("join", {
+  //     userType: "user",
+  //     userId: user._id,
+  //   });
   
-    console.log("JOIN EVENT SENT");
-  }, [socket, user]);
+  //   console.log("JOIN EVENT SENT");
+  // }, [socket, user]);
   
   
 
@@ -62,9 +62,9 @@ function Home() {
 
     useEffect(()=>{
        if (pickup && destination) fetchFare();
-       socket.emit("join",{
+       socket.emit('join',{
         userType:"user",
-        userId:user._id
+        userId:user._id,
        })
   
        socket.on("ride-comfirmed",(data)=>{
@@ -361,7 +361,13 @@ function Home() {
     )}
 
     {ride != null && (
-        <div>{ride.user.name}</div>
+            <div>
+              <div>{ride.captain.name}</div>
+              <div>{ride.captain.vehicle.plateNumber}</div>
+              <div>{ride.captain.vehicle.type}</div>
+              <div>{ride.otp}</div>
+            </div> 
+
     )}
  
     {/* 🔹 Back Button */}

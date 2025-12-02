@@ -76,20 +76,45 @@ function CaptainHome() {
     setAvailableRides((prev) => prev.filter((ride) => ride.id !== id));
   };
 
-  // ✅ Function to navigate to riding route
+  const [otpdata,setotpdata]=useState(null);
   const confirmRide = async() => {
-    // navigate("/captain/riding", { state: { ride: selectedRide } });
-
-     const response= await axios.post("http://localhost:3000/ride/comfirm",{
-          rideId:selectedRide._id,
-          captainId:captain._id,
-      },{
-        headers:{
-           Authorization:`Bearer ${localStorage.getItem('token')}`
-          }
-     });
-
+ try {
+    const response = await axios.post(
+      "http://localhost:3000/ride/comfirm",
+      {
+        otp: otp,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    setotpdata(response.data);
     setStep("riding");
+  } catch (error) {
+    alert(error.response?.data?.message || "Something went wrong");
+  }
+  };
+
+  const AcceptRide = async() => {
+ try {
+    const response = await axios.post(
+      "http://localhost:3000/ride/accept",
+      {
+        rideId: selectedRide._id,
+        captainId: captain._id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    setStep("riding");
+  } catch (error) {
+    alert(error.response?.data?.message || "Something went wrong");
+  }
   };
 
   return (
@@ -156,6 +181,7 @@ function CaptainHome() {
                       onClick={() => {
                         setSelectedRide(ride);
                         setStep("confirm");
+                        AcceptRide();
                       }}
                     >
                       Accept
@@ -214,13 +240,14 @@ function CaptainHome() {
             <div className="mt-5 flex flex-col gap-3">
               <button
                 className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded"
-                onClick={() => {
-                  if (otp === "1234") { // ✅ Example OTP
-                    confirmRide(); // Navigate to /captain/riding
-                  } else {
-                    alert("Incorrect OTP. Please enter the correct OTP.");
-                  }
-                }}
+                onClick={()=>{
+                  // if (otp === otpdata.otp) { 
+                  if (otp === '1234') { 
+                  confirmRide();
+                      } else {
+                   alert("Incorrect OTP");
+             }
+              }}
               >
                 Confirm
               </button>

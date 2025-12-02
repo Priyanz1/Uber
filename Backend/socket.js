@@ -28,7 +28,7 @@ const initializeSocket = (server, corsOptions = {}) => {
           await UserModel.findByIdAndUpdate(
             userId,
             { socketId: socket.id },
-            { new: true }
+            // { new: true }
           );
           console.log(`👤 User joined with socket: ${socket.id}`);
         }

@@ -38,6 +38,17 @@ const fareCon = async (req, res) => {
 };
 
 const comfirmRide=async(req,res,next)=>{
+  const {otp}=req.body;
+  try{
+    const otpCHeck=await service.comfirmRide(otp);
+    res.status(200).json(otpCHeck);
+  }catch(err){
+    console.error(err);
+    res.status(404).json({msg:"ride not comfirmed"});
+  }  
+}
+
+const acceptRide=async(req,res,next)=>{
   const {rideId}=req.body;
   try{
     const ride=await service.comfirmRide(rideId,req.captain._id);
@@ -53,4 +64,4 @@ const comfirmRide=async(req,res,next)=>{
 }
 
 
-module.exports={createRide,fareCon,comfirmRide};
+module.exports={createRide,fareCon,acceptRide,comfirmRide};

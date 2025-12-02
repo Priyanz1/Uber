@@ -180,21 +180,35 @@ const getCaptainInTheRadius= async (ltd,lng,radius)=>{
   })
   return captain;
 }
-const comfirmRide=async(rideId,captainId)=>{
+const comfirmRide=async(otp)=>{
+  if(!otp){
+    throw new Error("data not received");
+  } 
+
+  const otpCheck=await RidingModel.findOne({otp:otp});
+  if(!otpCheck){
+    throw new Error("invlid otp");
+  } 
+  return otpCheck;
+}
+
+const acceptRide=async(rideId,captainId)=>{
   if(!rideId || !captainId){
     throw new Error("data not received");
   } 
-  await RidingModel.findByIdAndUpdate({_id:rideId},{
+
+   await RidingModel.findByIdAndUpdate({_id:rideId},{
     captain:captainId,
     status:"accepted"
   });
-  const ride=await RidingModel.findOne({_id:rideId}).populate('user');
+  const ride=await RidingModel.findOne({_id:rideId}).populate('user').populate('captain').select('+otp');
   if(!ride){
     throw new Error("ride not found");
   } 
   return ride;
 }
 
-module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions, createRide ,getCaptainInTheRadius,getOtp,comfirmRide};
+
+module.exports = { getAddress, getDistanceAndTime, getFare, getAutoSuggestions, createRide ,getCaptainInTheRadius,getOtp,acceptRide,comfirmRide};
 
 
